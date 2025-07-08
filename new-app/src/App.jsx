@@ -36,7 +36,9 @@
 // }
 
 
-
+import About from "./about";
+import Contact from "./contact";
+import Home from "./home";
 import { useState } from "react";
 
 export default function App() {
@@ -48,9 +50,9 @@ export default function App() {
         <div>
             <nav>
                 <ul>
-                    <button onClick={() => handleClick(<Home />)}>Добро пожаловать на главную страницу</button>
-                    <button onClick={() => handleClick(<About />)}>О нас</button>
-                    <button onClick={() => handleClick(<Contact />)}>Контакты</button>
+                    <button onClick={() => handleClick("home")}>Добро пожаловать на главную страницу</button>
+                    <button onClick={() => handleClick("about")}>О нас</button>
+                    <button onClick={() => handleClick("contact")}>Контакты</button>
                 </ul>
             </nav>
             {page}
@@ -58,14 +60,3 @@ export default function App() {
     );
 }
 
-function Home() {
-    return <h2>Добро пожаловать на главную страницу</h2>;
-}
-
-function About() {
-    return <h2>О нас</h2>;
-}
-
-function Contact() {
-    return <h2>Контакты</h2>;
-}
