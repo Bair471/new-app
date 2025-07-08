@@ -36,30 +36,24 @@
 // }
 
 
-import { Routes, Route, Link } from 'react-router-dom';
+
 import { useState } from "react";
 
 export default function App() {
     const [page, setPage] = useState('');
-    const handleClick = function () {
-        setPage = < Link />
+    const handleClick = function (props) {
+        setPage(props);
     }
-
     return (
         <div>
             <nav>
                 <ul>
-                    <Link to="/Home">На главную</Link>
-                    <Link to="/About">О нас</Link>
-                    <Link to="/Contact">Контакты</Link>
+                    <button onClick={() => handleClick(<Home />)}>Добро пожаловать на главную страницу</button>
+                    <button onClick={() => handleClick(<About />)}>О нас</button>
+                    <button onClick={() => handleClick(<Contact />)}>Контакты</button>
                 </ul>
             </nav>
-
-            <Routes>
-                <Route path="/Home" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-            </Routes>
+            {page}
         </div>
     );
 }
