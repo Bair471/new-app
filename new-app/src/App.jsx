@@ -46,6 +46,13 @@ export default function App() {
     const handleClick = function (props) {
         setPage(props);
     }
+    if(page === "home") {
+        return <Home/>
+    } else if (page === "about") {
+        return <About/>
+    } else if (page === "contact") {
+        return <Contact/>
+    } else
     return (
         <div>
             <nav>
