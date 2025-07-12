@@ -36,29 +36,79 @@
 // }
 
 
+import { Routes, Route, Link } from "react-router-dom";
+import { useState } from "react";
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Home from "./home";
 import About from "./about";
 import Contact from "./contact";
-import Home from "./home";
-import { useState } from "react";
 
 export default function App() {
-    const [page, setPage] = useState('');
-    const handleClick = function (props) {
-        setPage(props);
-    }
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
     return (
         <div>
             <nav>
                 <ul>
-                    <button onClick={() => handleClick("home")}>Добро пожаловать на главную страницу</button>
-                    <button onClick={() => handleClick("about")}>О нас</button>
-                    <button onClick={() => handleClick("contact")}>Контакты</button>
+                    <li>
+                        <Link to="/">Добро пожаловать на главную страницу</Link>
+                    </li>
+                    <li>
+                        <Link to="/about">О нас</Link>
+                        <Button variant="contained">Contained</Button>
+                        <Button variant="contained" disabled>
+                            Disabled
+                        </Button>
+                        <Button variant="contained" href="#contained-buttons">
+                            Link
+                        </Button>
+                    </li>
+                    <li>
+                        <Link to="/contact">Контакты</Link>
+                        <Button>Primary</Button>
+                        <Button disabled>Disabled</Button>
+                        <Button href="#text-buttons">Link</Button>
+                    </li>
                 </ul>
+
+                <Button onClick={handleOpen}>Open modal</Button>
+
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="parent-modal-title"
+                    aria-describedby="parent-modal-description"
+                >
+                    <Box sx={{ ...style, width: 400 }}>
+                        <h2 id="parent-modal-title">Text in a modal</h2>
+                        <p id="parent-modal-description">
+                            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                        </p>
+                    </Box>
+                </Modal>
             </nav>
-            {page === "home"?<Home/>: null}
-            {page === "about"?<About/>: null}
-            {page === "contact"?<Contact/>: null}
+
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+            </Routes>
         </div>
     );
 }
-
