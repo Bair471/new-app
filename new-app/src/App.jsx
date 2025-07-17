@@ -114,6 +114,14 @@
 // }
 import { Routes, Route, Link } from 'react-router-dom';
 import { useState } from 'react';
+import Table from '@mui/material/Table';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import TableContainer from '@mui/material/TableContainer';
+import TableBody from '@mui/material/TableBody';
 
 export default function App() {
     return (
@@ -189,6 +197,9 @@ function Form({ onAddItems }) {
     const [description, setDescription] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [model, setModel] = useState("");
+    const [year, setYear] = useState("");
+    const [plate, setPlate] = useState("");
+    const [color, setColor] = useState("");
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -199,59 +210,102 @@ function Form({ onAddItems }) {
             description,
             quantity,
             model,
+            year,
+            plate,
+            color
         };
 
         onAddItems(newItem);
         setDescription('');
         setQuantity(1);
         setModel('');
+        setYear('');
+        setPlate('');
+        setColor('');
     }
 
     return (
         <form onSubmit={handleSubmit}>
             <h3>Add Car</h3>
-            <select
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-            >
-                {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-                    <option value={num} key={num}>
-                        {num}
-                    </option>
-                ))}
-            </select>
-            <input
-                type="text"
-                placeholder="Марка..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Модель..."
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Год выпуска..."
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Гос номер..."
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Цвет..."
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-            />
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Кол-во</TableCell>
+                            <TableCell>Марка</TableCell>
+                            <TableCell>Модель</TableCell>
+                            <TableCell>Год</TableCell>
+                            <TableCell>Гос. номер</TableCell>
+                            <TableCell>Цвет</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>
+                                <select
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(Number(e.target.value))}
+                                >
+                                    {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+                                        <option value={num} key={num}>
+                                            {num}
+                                        </option>
+                                    ))}
+                                </select>
+                            </TableCell>
 
-            <button type="submit">Add</button>
+                            <TableCell>
+                                <input
+                                    type="text"
+                                    placeholder="Марка"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                />
+                            </TableCell>
+
+                            <TableCell>
+                                <input
+                                    type="text"
+                                    placeholder="Модель"
+                                    value={model}
+                                    onChange={(e) => setModel(e.target.value)}
+                                />
+                            </TableCell>
+
+                            <TableCell>
+                                <select
+                                    value={year}
+                                    onChange={(e) => setYear(e.target.value)}
+                                >
+                                    <option value="">Год</option>
+                                    {Array.from({ length: 40 }, (_, i) => 1990 + i).map((y) => (
+                                        <option key={y} value={y}>{y}</option>
+                                    ))}
+                                </select>
+                            </TableCell>
+
+                            <TableCell>
+                                <input
+                                    type="text"
+                                    placeholder="Гос. номер"
+                                    value={plate}
+                                    onChange={(e) => setPlate(e.target.value)}
+                                />
+                            </TableCell>
+
+                            <TableCell>
+                                <input
+                                    type="text"
+                                    placeholder="Цвет"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                />
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Button variant="contained">Add</Button>
         </form>
     );
 }
@@ -260,7 +314,7 @@ function Car({ car, onDeleteItem }) {
     return (
         <li>
             <span style={car.packed ? { textDecoration: "line-through" } : {}}>
-                {car.quantity} {car.description} {car.model}
+                {car.quantity} {car.description} {car.model} {car.year} {car.plate} {car.color}
             </span>
             <button onClick={() => onDeleteItem(car.id)}>❌</button>
         </li>
