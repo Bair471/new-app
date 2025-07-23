@@ -1,3 +1,8 @@
 export default function Contact() {
-    return <h2>Контакты</h2>;
-}
+    return (
+      <div style={{ padding: 16 }}>
+        <h2>Контакты</h2>
+        <p>Contacts</p>
+      </div>
+    );
+  }
