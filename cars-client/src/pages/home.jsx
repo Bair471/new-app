@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Form from "./form";
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -26,8 +26,22 @@ export default function Home() {
     );
 }
 
+function CarsTable() {
+    const [cars, setCars] = useState([]);
 
-function CarsTable({ cars, onDelete }) {
+    useEffect(() => {
+        fetch('http://localhost:3000/cars')
+            .then((res) => res.json())
+            .then((data) => setCars(data))
+            .catch((err) => console.error('Ошибка загрузки машин:', err));
+    }, []);
+
+    const onDelete = async (id) => {
+        await fetch(`http://localhost:3000/cars/${id}`, {
+            method: 'DELETE',
+        });
+        setCars((prev) => prev.filter((car) => car.id !== id));
+    };
     return (
         <Table sx={{ maxWidth: 500, margin: 'auto', mb: 4 }}>
             <TableHead>
@@ -45,7 +59,7 @@ function CarsTable({ cars, onDelete }) {
                 {cars.map((car) => (
                     <TableRow key={car.id}>
                         <TableCell>{car.quantity}</TableCell>
-                        <TableCell>{car.description}</TableCell>
+                        <TableCell>{car.brand}</TableCell>
                         <TableCell>{car.model}</TableCell>
                         <TableCell>{car.year}</TableCell>
                         <TableCell>{car.plate}</TableCell>
