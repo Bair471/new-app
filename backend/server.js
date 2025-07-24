@@ -26,7 +26,7 @@ app.get('/cars', (req, res) => {
 app.post('/cars', (req, res) => {
   const newCar = req.body;
 
-  if (!newCar || !newCar.id || !newCar.description || !newCar.quantity || !newCar.model || !newCar.year || !newCar.plate || !newCar.color) {
+  if (!newCar || !newCar.id || !newCar.brand || !newCar.quantity || !newCar.model || !newCar.year || !newCar.plate || !newCar.color) {
     return res.status(400).json({ message: 'Неверные данные' });
   }
 

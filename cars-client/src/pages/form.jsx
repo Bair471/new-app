@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 
 export default function Form({ onAddItems }) {
-  const [description, setDescription] = useState('');
+  const [brand, setBrand] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [model, setModel] = useState('');
   const [year, setYear] = useState('');
@@ -15,11 +15,11 @@ export default function Form({ onAddItems }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!description.trim()) return;
+    if (!brand.trim()) return;
 
     const newItem = {
       id: Date.now(),
-      description,
+      brand,
       quantity,
       model,
       year,
@@ -42,7 +42,7 @@ export default function Form({ onAddItems }) {
 
       onAddItems(addedCar);
 
-      setDescription('');
+      setBrand('');
       setQuantity(1);
       setModel('');
       setYear('');
@@ -60,8 +60,8 @@ export default function Form({ onAddItems }) {
           <Grid item xs={12}>
             <TextField
               label="Марка"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
               fullWidth
               size="small"
               required
