@@ -1,52 +1,80 @@
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
-import { cars } from './data.js';
+import pkg from 'pg';
+
+const { Client } = pkg;
+
+const client = new Client({
+  host: 'localhost',
+  port: 5432,
+  database: 'cars_db',
+  user: 'adminadmin',
+  password: 'adminadmin',
+});
+
+client.connect();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/cars/:id', (req, res) => {
+// Получить машину по ID
+app.get('/cars/:id', async (req, res) => {
   const carsID = parseInt(req.params.id);
-
-  const car = cars.find(car => car.id === carsID);
-
-  if (car) {
-    res.json(car);
-  } else {
-    res.status(404).json({ message: 'Машина не найдена' });
+  try {
+    const result = await client.query('SELECT * FROM cars WHERE id = $1', [carsID]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Машина не найдена' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Ошибка:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
 
-app.get('/cars', (req, res) => {
-  res.send(cars);
-})
-
-app.post('/cars', (req, res) => {
-  const newCar = req.body;
-
-  if (!newCar || !newCar.id || !newCar.brand || !newCar.quantity || !newCar.model || !newCar.year || !newCar.plate || !newCar.color) {
-    return res.status(400).json({ message: 'Неверные данные' });
+// Получить все машины
+app.get('/cars', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM cars');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Ошибка:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
   }
+});
 
-  cars.push(newCar);
+// Добавить новую машину
+app.post('/cars', async (req, res) => {
+  const { brand, model, year, price, color } = req.body;
+  try {
+    const result = await client.query(
+      'INSERT INTO cars (brand, model, year, price, color) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [brand, model, year, price, color]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Ошибка:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
 
-  res.status(201).json({ message: 'Машина добавлена', car: newCar });
-})
-
-app.delete('/cars/:id', (req, res) => {
+// Удалить машину
+app.delete('/cars/:id', async (req, res) => {
   const idToDelete = parseInt(req.params.id);
-  const index = cars.findIndex((car) => car.id === idToDelete);
-
-  if (index === -1) {
-    return res.status(404).json({ message: 'Машина не найдена' });
+  try {
+    const result = await client.query('DELETE FROM cars WHERE id = $1 RETURNING *', [idToDelete]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Машина не найдена' });
+    }
+    res.json({ message: 'Машина успешно удалена', car: result.rows[0] });
+  } catch (error) {
+    console.error('Ошибка:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
   }
-
-  const deletedCar = cars.splice(index, 1);
-  res.status(200).json({ message: 'Машина удалена', car: deletedCar[0] });
 });
 
 app.listen(3000, () => {
   console.log('Сервер работает на http://localhost:3000');
 });
+

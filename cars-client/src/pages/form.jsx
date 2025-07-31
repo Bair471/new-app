@@ -18,7 +18,6 @@ export default function Form({ onAddItems }) {
     if (!brand.trim()) return;
 
     const newItem = {
-      id: Date.now(),
       brand,
       quantity,
       model,
