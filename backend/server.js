@@ -46,11 +46,11 @@ app.get('/cars', async (req, res) => {
 
 // Добавить новую машину
 app.post('/cars', async (req, res) => {
-  const { brand, model, year, price, color } = req.body;
+  const { brand, quantity, model, year, plate, color } = req.body;
   try {
     const result = await client.query(
-      'INSERT INTO cars (brand, model, year, price, color) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [brand, model, year, price, color]
+      'INSERT INTO cars (brand, quantity, model, year, plate, color) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [brand, quantity, model, year, plate, color]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
