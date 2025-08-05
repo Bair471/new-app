@@ -75,6 +75,6 @@ app.delete('/cars/:id', async (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log('Сервер работает на http://localhost:3000');
+  console.log('Сервер работает на http://localhost:5432');
 });
 
