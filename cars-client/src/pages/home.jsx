@@ -6,6 +6,7 @@ import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Button from '@mui/material/Button';
+import BasicModal from './edit';
 
 export default function Home() {
     const [cars, setCars] = useState([]);
@@ -71,8 +72,11 @@ function CarsTable() {
                                 size="small"
                                 onClick={() => onDelete(car.id)}
                             >
-                                Удалить
+                                Delete
                             </Button>
+
+                            <BasicModal />
+                            
                         </TableCell>
                     </TableRow>
                 ))}
