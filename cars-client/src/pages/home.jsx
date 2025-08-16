@@ -27,42 +27,36 @@ export default function Home() {
     );
 }
 
-function CarsTable () {
-
-const [cars, setCars] = useState([]);
-const [selectedCar, setSelectedCar] = useState(null);
+function CarsTable() {
+    const [cars, setCars] = useState([]);
+    const [selectedCar, setSelectedCar] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:3000/cars')
             .then((res) => res.json())
             .then((data) => setCars(data))
-            .catch((err) => console.error('Failed to load cars', err));
+            .catch((err) => console.error('Ошибка загрузки машин:', err));
     }, []);
 
-    const onDelete = async(id) => {
+    const onDelete = async (id) => {
         await fetch(`http://localhost:3000/cars/${id}`, {
             method: 'DELETE',
         });
-        setCars((cars) => cars.filter((car) => car.id !== id));
+        setCars((prev) => prev.filter((car) => car.id !== id));
     };
 
-    const handleEdit = async(car) => {
+    const handleEdit = (car) => {
         setSelectedCar(car);
-        await fetch(`http://localhost:3000/cars/${car.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(car)
-        });
-    }
+    };
 
     const handleCloseModal = () => {
-                setSelectedCar(null);
-                // Обновляем список машин после редактирования
-                fetch('http://localhost:3000/cars')
-                    .then((res) => res.json())
-                    .then((data) => setCars(data))
-                    .catch((err) => console.error('Ошибка загрузки машин:', err));
-            };
+        setSelectedCar(null);
+        fetch('http://localhost:3000/cars')
+            .then((res) => res.json())
+            .then((data) => setCars(data))
+            .catch((err) => console.error('Ошибка загрузки машин:', err));
+    };
+
 
 return (
     <>
