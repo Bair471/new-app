@@ -6,7 +6,7 @@ import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Button from '@mui/material/Button';
-import BasicModal from './edit';
+import BasicModal from "./edit";
 
 export default function Home() {
     const [cars, setCars] = useState([]);
@@ -27,23 +27,45 @@ export default function Home() {
     );
 }
 
-function CarsTable() {
-    const [cars, setCars] = useState([]);
+function CarsTable () {
+
+const [cars, setCars] = useState([]);
+const [selectedCar, setSelectedCar] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:3000/cars')
             .then((res) => res.json())
             .then((data) => setCars(data))
-            .catch((err) => console.error('Ошибка загрузки машин:', err));
+            .catch((err) => console.error('Failed to load cars', err));
     }, []);
 
-    const onDelete = async (id) => {
+    const onDelete = async(id) => {
         await fetch(`http://localhost:3000/cars/${id}`, {
             method: 'DELETE',
         });
-        setCars((prev) => prev.filter((car) => car.id !== id));
+        setCars((cars) => cars.filter((car) => car.id !== id));
     };
-    return (
+
+    const handleEdit = async(car) => {
+        setSelectedCar(car);
+        await fetch(`http://localhost:3000/cars/${car.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(car)
+        });
+    }
+
+    const handleCloseModal = () => {
+                setSelectedCar(null);
+                // Обновляем список машин после редактирования
+                fetch('http://localhost:3000/cars')
+                    .then((res) => res.json())
+                    .then((data) => setCars(data))
+                    .catch((err) => console.error('Ошибка загрузки машин:', err));
+            };
+
+return (
+    <>
         <Table sx={{ maxWidth: 500, margin: 'auto', mb: 4 }}>
             <TableHead>
                 <TableRow>
@@ -68,19 +90,31 @@ function CarsTable() {
                         <TableCell>
                             <Button
                                 variant="outlined"
+                                color="primary"
+                                size="small"
+                                onClick={() => handleEdit(car)}
+                                sx={{ mr: 1 }}
+                            >
+                                Редактировать
+                            </Button>
+                            <Button
+                                variant="outlined"
                                 color="error"
                                 size="small"
                                 onClick={() => onDelete(car.id)}
                             >
-                                Delete
+                                Удалить
                             </Button>
-
-                            <BasicModal />
-                            
                         </TableCell>
                     </TableRow>
                 ))}
             </TableBody>
         </Table>
-    );
+
+        <BasicModal
+            car={selectedCar}
+            onSave={handleCloseModal}
+        />
+    </>
+);
 }

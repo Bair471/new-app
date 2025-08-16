@@ -74,7 +74,41 @@ app.delete('/cars/:id', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Сервер работает на http://localhost:5432');
+app.put('/cars/:id', async (req, res) => {
+  try {
+      const carId = parseInt(req.params.id);
+      const { brand, model, year, plate, color, quantity } = req.body;
+      
+      console.log('Обновляем машину ID:', carId);
+      console.log('Новые данные:', req.body);
+      
+      const query = `
+          UPDATE cars 
+          SET brand = $1, model = $2, year = $3, plate = $4, color = $5, quantity = $6
+          WHERE id = $7
+          RETURNING *
+      `;
+      
+      const values = [brand, model, year, plate, color, quantity, carId];
+      
+      const result = await client.query(query, values);
+      
+      if (result.rows.length === 0) {
+          return res.status(404).json({ error: 'Машина не найдена' });
+      }
+      
+      console.log('Машина обновлена:', result.rows[0]);
+      res.json(result.rows[0]);
+      
+  } catch (error) {
+      console.error('Ошибка обновления:', error);
+      res.status(500).json({ error: 'Ошибка сервера' });
+  }
 });
 
+
+
+
+app.listen(3000, () => {
+  console.log('Сервер работает на http://localhost:3000');
+});
